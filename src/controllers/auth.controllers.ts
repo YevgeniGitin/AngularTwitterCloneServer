@@ -15,19 +15,20 @@ export async function register(
   res: Response,
   next: NextFunction
 ) {
+  console.log('register');
   try {
     let ans = await authServices.getUserByUserName(req.body.userHandle);
     //check if user name is duplicated
     if (ans) {
       return res.status(409).send({
-        message: 'user name is already in use'
+        message: 'User name is already in use'
       });
     }
     //check if email is duplicated
     ans = await authServices.getUserByemail(req.body.email);
     if (ans) {
       return res.status(409).send({
-        message: 'email is already in use'
+        message: 'Email is already in use'
       });
     }
     //create user for write do db
@@ -72,6 +73,7 @@ export async function logIn(
   res: express.Response,
   next: express.NextFunction
 ) {
+  console.log('logIn');
   passport.authenticate(
     'local',
     { session: false },

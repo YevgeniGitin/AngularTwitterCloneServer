@@ -8,6 +8,7 @@ export async function getAllTweets(
   res: Response,
   next: NextFunction
 ) {
+  console.log('getAllTweets');
   try {
     let tweets: TweetToSend[] = await tweetsServices.getAllTweets(
       req.headers.authorization
@@ -24,6 +25,7 @@ export async function postNewTweet(
   res: Response,
   next: NextFunction
 ) {
+  console.log('postNewTweet');
   try {
     let tweet: TweetToSendAfterCreate | null = await tweetsServices.saveNewTweet(
       req.body.text,
@@ -41,6 +43,7 @@ export async function deleteTweet(
   res: Response,
   next: NextFunction
 ) {
+  console.log('deleteTweet');
   try {
     let id: string = req.params.id;
     let token: string | undefined = req.headers.authorization;
@@ -68,6 +71,7 @@ export async function updateStars(
   res: Response,
   next: NextFunction
 ) {
+  console.log('updateStars');
   try {
     let id: string = req.params.id;
     let token: string | undefined = req.headers.authorization;

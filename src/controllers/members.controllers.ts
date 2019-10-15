@@ -9,6 +9,7 @@ export async function getMemberById(
   res: Response,
   next: NextFunction
 ) {
+  console.log('getMemberById');
   try {
     let member: UserToSend | null = await membersServices.getUserById(req.params.id);
     if (member) {
@@ -29,6 +30,7 @@ export async function getMembersTweets(
   res: Response,
   next: NextFunction
 ) {
+  console.log('getMembersTweets');
   try {
     let id: string = req.params.id;
     //check users id if exists in the db
