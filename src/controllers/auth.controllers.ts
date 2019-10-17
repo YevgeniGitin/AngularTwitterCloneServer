@@ -6,9 +6,11 @@ import { IVerifyOptions } from 'passport-local';
 import * as authServices from '../services/auth.services';
 import { UserToWrite, UserToSend } from '../models/user';
 import { keys } from '../utils/config';
+const fs = require('fs');
 
 const jwtSecret = keys.secret;
-const profileUrl = 'https://myfarminfo.com/Tools/Img/Profile/customer.png';
+const defaultProfileUrl = 'https://myfarminfo.com/Tools/Img/Profile/customer.png';
+const profileUrl = 'http://localhost:3001/public/';
 //register new user
 export async function register(
   req: Request,
@@ -20,20 +22,30 @@ export async function register(
     let ans = await authServices.getUserByUserName(req.body.userHandle);
     //check if user name is duplicated
     if (ans) {
+      //delete the added file
+      if(req.file){
+        fs.unlinkSync('src/images/'+req.body.email+req.body.userHandle+req.file.originalname);
+        console.log('successfully deleted');
+      }
       return res.status(409).send({
         message: 'User name is already in use'
       });
     }
-    //check if email is duplicated
+    // check if email is duplicated
     ans = await authServices.getUserByemail(req.body.email);
     if (ans) {
+      //delete the added file
+       if(req.file){
+        fs.unlinkSync('src/images/'+req.body.email+req.body.userHandle+req.file.originalname);
+        console.log('successfully deleted');
+      }
       return res.status(409).send({
         message: 'Email is already in use'
       });
     }
     //create user for write do db
     let userToWrite: UserToWrite = {
-      avatarUrl: profileUrl,
+      avatarUrl: req.file? (profileUrl+req.body.email+req.body.userHandle+req.file.originalname) :defaultProfileUrl,
       email: req.body.email,
       userHandle: req.body.userHandle,
       password: req.body.password,
@@ -54,8 +66,6 @@ export async function register(
           if (jwtError) {
             res.send(error);
           } else {
-            //ctreate user for send back without password
-
             //send the token and user
             return res.status(201).send({ token, ...user });
           }
